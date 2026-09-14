@@ -5,6 +5,7 @@ import { type FormEvent, useState } from "react";
 import { ProgressiveImage } from "@/app/components/progressive-image/ProgressiveImage";
 import { useTranslation } from "@/app/contexts/TranslationContext";
 import { useScrollAnimation, useUtmParams, getTrafficSource, clearUtmParams } from "@/app/hooks";
+import { reportGoogleAdsConversion } from "@/app/lib/google-ads";
 import { SpiralDecoration } from "@/app/components/spiral-decoration";
 import styles from "./ContactSection.module.css";
 
@@ -86,6 +87,14 @@ export function ContactSection({
         throw new Error("Failed to submit form");
       }
 
+      let enquiryId: string | number | undefined;
+      try {
+        const result: { data?: { id?: string | number } } = await response.json();
+        enquiryId = result.data?.id;
+      } catch {
+        // Tracking metadata must not hide a successful contact submission.
+      }
+
       // Push conversion event to GTM dataLayer
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
@@ -99,6 +108,10 @@ export function ContactSection({
         contact_email: formData.email,
         contact_company: formData.company,
       });
+
+      if (enquiryId != null) {
+        reportGoogleAdsConversion(`contact-${enquiryId}`);
+      }
 
       clearUtmParams();
       setSubmitStatus("success");
