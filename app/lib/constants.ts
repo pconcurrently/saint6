@@ -1,4 +1,1 @@
 export const GTM_ID = "GTM-WMSWCSQ9";
-export const GOOGLE_ADS_ID = "AW-18437392228";
-export const GOOGLE_ADS_CONVERSION_SEND_TO =
-  "AW-18437392228/qRKzCMCsvPEcEOSO0ddE";

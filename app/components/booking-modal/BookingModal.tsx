@@ -16,7 +16,6 @@ import { ProgressiveImage } from "@/app/components/progressive-image/Progressive
 import { Calendar } from "@/app/components/ui/calendar";
 import { useTranslation } from "@/app/contexts/TranslationContext";
 import { clearUtmParams, getTrafficSource, useUtmParams } from "@/app/hooks";
-import { reportGoogleAdsConversion } from "@/app/lib/google-ads";
 import styles from "./BookingModal.module.css";
 
 const STRAPI_URL =
@@ -508,9 +507,11 @@ export function BookingModal({
         estimated_budget: estimatedBudget,
         contact_name: formData.name,
         contact_email: formData.email,
+        transaction_id:
+          enquiryId != null ? `booking-${enquiryId}` : undefined,
+        value: 1,
+        currency: "VND",
       });
-
-      if (enquiryId != null) reportGoogleAdsConversion(enquiryId);
 
       clearUtmParams();
       setModalState("success");

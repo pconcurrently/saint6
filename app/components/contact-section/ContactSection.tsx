@@ -5,7 +5,6 @@ import { type FormEvent, useState } from "react";
 import { ProgressiveImage } from "@/app/components/progressive-image/ProgressiveImage";
 import { useTranslation } from "@/app/contexts/TranslationContext";
 import { useScrollAnimation, useUtmParams, getTrafficSource, clearUtmParams } from "@/app/hooks";
-import { reportGoogleAdsConversion } from "@/app/lib/google-ads";
 import { SpiralDecoration } from "@/app/components/spiral-decoration";
 import styles from "./ContactSection.module.css";
 
@@ -107,11 +106,11 @@ export function ContactSection({
         contact_name: formData.name,
         contact_email: formData.email,
         contact_company: formData.company,
+        transaction_id:
+          enquiryId != null ? `contact-${enquiryId}` : undefined,
+        value: 1,
+        currency: "VND",
       });
-
-      if (enquiryId != null) {
-        reportGoogleAdsConversion(`contact-${enquiryId}`);
-      }
 
       clearUtmParams();
       setSubmitStatus("success");

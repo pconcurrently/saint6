@@ -7,7 +7,7 @@ import { ErrorBoundary } from "@/app/components/error-boundary";
 import { FloatingMessengerButton } from "@/app/components/floating-messenger-button";
 import { Footer } from "@/app/components/footer/Footer";
 import { TranslationProvider } from "@/app/contexts/TranslationContext";
-import { GOOGLE_ADS_ID, GTM_ID } from "@/app/lib/constants";
+import { GTM_ID } from "@/app/lib/constants";
 import { FALLBACK_FOOTER, FALLBACK_SEO, FALLBACK_SOCIAL_LINKS } from "@/app/lib/fallback";
 import { getFooter, getSeoMetadata, getSocialLinks, getStrapiImageUrl } from "@/app/lib/strapi";
 import type { Locale } from "@/app/types";
@@ -151,17 +151,6 @@ export default async function LocaleLayout({
   return (
     <html lang={typedLocale}>
       <head>
-        <Script
-          id="_google-ads-tag"
-          strategy="beforeInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
-        />
-        <Script id="_google-ads-init" strategy="beforeInteractive">
-          {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${GOOGLE_ADS_ID}');`}
-        </Script>
         {/* Capture UTM params from URL into sessionStorage before React hydrates */}
         <Script src="/scripts/capture-utm.js" strategy="beforeInteractive" />
         <link rel="preconnect" href="https://strapi.saint6.studio" />

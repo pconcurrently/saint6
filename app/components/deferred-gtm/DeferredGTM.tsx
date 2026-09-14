@@ -2,7 +2,12 @@
 
 import Script from "next/script";
 import { useEffect, useState } from "react";
-import { initializeGoogleAds } from "@/app/lib/google-ads";
+
+declare global {
+  interface Window {
+    dataLayer: Record<string, unknown>[];
+  }
+}
 
 interface DeferredGTMProps {
   gtmId: string;
@@ -10,14 +15,11 @@ interface DeferredGTMProps {
 
 /**
  * Loads GTM after the first user interaction or 12 s, whichever comes first.
- * The lightweight site-wide Google Ads tag is initialized earlier in the head.
  */
 export function DeferredGTM({ gtmId }: DeferredGTMProps) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    initializeGoogleAds();
-
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       "gtm.start": Date.now(),
