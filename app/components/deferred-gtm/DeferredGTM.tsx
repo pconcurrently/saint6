@@ -6,21 +6,17 @@ import { initializeGoogleAds } from "@/app/lib/google-ads";
 
 interface DeferredGTMProps {
   gtmId: string;
-  googleAdsId: string;
 }
 
 /**
- * Loads the site-wide Google Ads tag once after hydration. GTM remains deferred
- * until the first user interaction or 12 s, whichever comes first, to keep its
- * heavier integrations out of the Lighthouse measurement window.
+ * Loads GTM after the first user interaction or 12 s, whichever comes first.
+ * The lightweight site-wide Google Ads tag is initialized earlier in the head.
  */
-export function DeferredGTM({ gtmId, googleAdsId }: DeferredGTMProps) {
+export function DeferredGTM({ gtmId }: DeferredGTMProps) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     initializeGoogleAds();
-    window.gtag?.("js", new Date());
-    window.gtag?.("config", googleAdsId);
 
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
@@ -51,22 +47,15 @@ export function DeferredGTM({ gtmId, googleAdsId }: DeferredGTMProps) {
     };
 
     return cleanup;
-  }, [googleAdsId]);
+  }, []);
+
+  if (!ready) return null;
 
   return (
-    <>
-      <Script
-        id="_google-ads-tag"
-        strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
-      />
-      {ready && (
-        <Script
-          id="_deferred-gtm"
-          strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`}
-        />
-      )}
-    </>
+    <Script
+      id="_deferred-gtm"
+      strategy="afterInteractive"
+      src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`}
+    />
   );
 }

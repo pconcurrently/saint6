@@ -151,6 +151,17 @@ export default async function LocaleLayout({
   return (
     <html lang={typedLocale}>
       <head>
+        <Script
+          id="_google-ads-tag"
+          strategy="beforeInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+        />
+        <Script id="_google-ads-init" strategy="beforeInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GOOGLE_ADS_ID}');`}
+        </Script>
         {/* Capture UTM params from URL into sessionStorage before React hydrates */}
         <Script src="/scripts/capture-utm.js" strategy="beforeInteractive" />
         <link rel="preconnect" href="https://strapi.saint6.studio" />
@@ -162,7 +173,7 @@ export default async function LocaleLayout({
           </>
         )}
       </head>
-      <DeferredGTM gtmId={GTM_ID} googleAdsId={GOOGLE_ADS_ID} />
+      <DeferredGTM gtmId={GTM_ID} />
       <body
         className={`${publicSans.variable} ${jetbrainsMono.variable} ${sairaCondensed.variable} antialiased`}
         suppressHydrationWarning
